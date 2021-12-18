@@ -4,34 +4,33 @@
 
 ;first part
 (car (foldl
-       (lambda (cV acc)
-         (define count (car acc))
-         (define lastValue (cdr acc))
-         (if (> cV lastValue) 
-           (cons (+ count 1) cV)
-           (cons count  cV)
-           )) 
-       '(0 . +inf.0) nums))
+      (lambda (cV acc)
+        (define count (car acc))
+        (define last-value (cdr acc))
+        (if (> cV last-value)
+            (cons (+ count 1) cV)
+            (cons count  cV)
+            ))
+      '(0 . +inf.0) nums))
 
 ;second part
-(define (sumList l) (for/sum ([i l]) i))
+(define (sum-list l) (for/sum ([i l]) i))
 
 (car (foldl
-       (lambda (cV acc)
-         (define count (car acc))
-         (define lastWindow (cdr acc))
-         (cond 
-           [(< (length lastWindow) 3) (cons count (append lastWindow (list cV)))]
-           [else (let 
-                   (
-                    [currentWindow (append (rest lastWindow) (list cV))]
-                   [lastSum (sumList lastWindow)]
-                   ) 
-                   (cons (if 
-                      (> (sumList currentWindow) lastSum)
-                      (+ count 1)
-                      count
-                           ) currentWindow))
-                 ]
-           ))
-       (cons 0 '()) nums))
+      (lambda (cV acc)
+        (define count (car acc))
+        (define last-window (cdr acc))
+        (cond
+          [(< (length last-window) 3) (cons count (append last-window (list cV)))]
+          [else (let
+                    (
+                     [current-window (append (rest last-window) (list cV))]
+                     [lastSum (sum-list last-window)]
+                     )
+                  (cons (if
+                         (> (sum-list current-window) lastSum)
+                         (+ count 1)
+                         count
+                         ) current-window))]
+          ))
+      (cons 0 '()) nums))
