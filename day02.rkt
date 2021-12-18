@@ -8,14 +8,18 @@
 (define commands (map split-command (file->lines "inputs/day02.txt")))
 
 ;first part
-;(foldl
-;(lambda (cV acc)
-;(define count (car acc))
-;(define lastValue (cdr acc))
-;(if (> cV lastValue)
-;(cons (+ count 1) cV)
-;(cons count  cV)
-;))
-;'(0 . 0) commands)
+(define
+  (cal-movement current-position command)
+  (define direction (car command))
+  (define movement (cdr command))
+  (define current-x-position (car current-position))
+  (define current-y-position (cdr current-position))
+  (cons (+ current-x-position movement) (+ current-y-position movement)))
+
+(foldl
+ (lambda (current-command acc)
+   (cal-movement acc current-command))
+ '(0 . 0)
+ commands)
 
 ;second part
