@@ -9,17 +9,28 @@
 
 ;first part
 (define
-  (cal-movement current-position command)
+  (cal-movement command)
   (define direction (car command))
   (define movement (cdr command))
+  (match direction
+    ["forward" (cons movement 0)]
+    ["down" (cons 0 movement)]
+    ["up" (cons 0 (* -1 movement))]))
+
+(define
+  (next-movement current-position command)
+  (define movement (cal-movement command))
   (define current-x-position (car current-position))
   (define current-y-position (cdr current-position))
-  (cons (+ current-x-position movement) (+ current-y-position movement)))
+  (cons (+ current-x-position (car movement)) (+ current-y-position (cdr movement))))
 
-(foldl
- (lambda (current-command acc)
-   (cal-movement acc current-command))
- '(0 . 0)
- commands)
+(define final-position
+  (foldl
+   (lambda (current-command acc)
+     (next-movement acc current-command))
+   '(0 . 0)
+   commands))
+
+(* (car final-position) (cdr final-position))
 
 ;second part
