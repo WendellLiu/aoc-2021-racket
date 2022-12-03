@@ -1,7 +1,7 @@
 #lang racket
 
-(define path-of-source "inputs/test-day02.txt")
-;(define path-of-source "inputs/day02.txt")
+;(define path-of-source "inputs/test-day02.txt")
+(define path-of-source "inputs/day02.txt")
 
 (define (map-opp-to-symbol c)
   (match c
@@ -39,16 +39,13 @@
 
 (define (sum-score l) (+ (get-shape-score l) (get-outcome-score l)))
 
-
-(displayln (sum-score (split-command "A Y")))
-
 (define (extract-result-list path)
   (with-input-from-file path
     (lambda ()
-      (1)
-      )))
+      (for/fold ([acc 0]) ([i (in-lines)])
+        (+ acc (sum-score (split-command i)))))))
 
-
+(displayln (extract-result-list path-of-source))
 
 
 
