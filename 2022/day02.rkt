@@ -22,8 +22,8 @@
 
 (define shape-score-table (hash 'R 1 'P 2 'S 3))
 
-(define (get-shape-score l pos)
-  (hash-ref shape-score-table (list-ref l pos)))
+(define (get-shape-score l)
+  (hash-ref shape-score-table (list-ref l 1)))
 
 (define rock-table (hash 'P 'L 'R 'D 'S 'W))
 (define scissors-table (hash 'P 'W 'R 'L 'S 'D))
@@ -37,12 +37,21 @@
       ['D 3]
       ['W 6])))
 
-(displayln (get-outcome-score (split-command "A Z")))
+(define (sum-score l) (+ (get-shape-score l) (get-outcome-score l)))
+
+
+(displayln (sum-score (split-command "A Y")))
 
 (define (extract-result-list path)
   (with-input-from-file path
     (lambda ()
       (1)
       )))
+
+
+
+
+
+
 
 
