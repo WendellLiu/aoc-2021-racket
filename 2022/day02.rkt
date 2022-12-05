@@ -47,8 +47,39 @@
 
 (displayln (extract-result-list path-of-source))
 
+(define rock-match-table (hash 'L 'S 'D 'R 'W 'P))
+(define scissors-match-table (hash 'L 'P 'D 'S 'W 'R))
+(define paper-match-table (hash 'L 'R 'D 'P 'W 'S))
+(define outcome-match-table (hash 'R rock-match-table 'S scissors-match-table 'P paper-match-table))
+(define (get-outcome-code-to-shape-score l)
+  (let ([opp (list-ref l 0)] [outcome-code (list-ref l 1)])
+    (hash-ref shape-score-table (hash-ref (hash-ref outcome-match-table opp) outcome-code)
+              )))
 
+(define (map-outcome-code-to-symbol c)
+  (match c
+    ["X" 'L]
+    ["Y" 'D]
+    ["Z" 'W]))
 
+(define (split-command-2 command)
+  (let ([l (string-split command)])
+    (list (map-opp-to-symbol (list-ref l 0)) (map-outcome-code-to-symbol (list-ref l 1)))))
 
+(define (get-outcome-score-part2 l)
+  (let ([outcome (list-ref l 1)])
+    (match outcome
+      ['L 0]
+      ['D 3]
+      ['W 6])))
+
+(define (sum-score-part2 l) (+ (get-outcome-code-to-shape-score l) (get-outcome-score-part2 l)))
+(define (extract-result-list-part2 path)
+  (with-input-from-file path
+    (lambda ()
+      (for/fold ([acc 0]) ([i (in-lines)])
+        (+ acc (sum-score-part2 (split-command-2 i)))))))
+
+(displayln (extract-result-list-part2 path-of-source))
 
 
