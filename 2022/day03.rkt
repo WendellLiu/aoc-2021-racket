@@ -22,13 +22,11 @@
       ([pos (/ (string-length str) 2)] [l (string->list str)])
     (cons (take l pos) (drop l pos))))
 
-(check-equal? (split-to-pair "asPfzegP") (cons '(#\a #\s #\P #\f) '(#\z #\e #\g #\P)))
-
-(define (string-to-hash str)
+(define (string-to-hash str-list)
   (foldl (lambda (value acc)
            (hash-set acc value #t))
          #hash()
-         str))
+         str-list))
 
 (define (match-char char-hash str)
   (findf (lambda (char)
@@ -52,4 +50,38 @@
 (check-equal? (extract-result-list path-of-test-source) 157)
 
 (displayln (extract-result-list path-of-source))
+
+(define (group-by-num l n)
+  (foldl (lambda (value acc)
+           (if
+            (= n (length (cdr acc)))
+            (cons acc (list value))
+            (cons (car acc) (append (cdr acc) (list value)))))
+         (cons null '())
+         l))
+
+(check-equal? (group-by-num '(1 2 3 4 5 6) 3) (cons (cons null '(1 2 3)) '(4 5 6)))
+
+(define (get-badge-type l)
+  (define l2 (map string->list l))
+  (let ([table1 (string-to-hash (first l2))] [table2 (string-to-hash (second l2))] [third-str (third l2)])
+    (findf (lambda (char)
+             (and (hash-has-key? table1 char) (hash-has-key? table2 char))) third-str)))
+
+(define get-score-from-group (compose1 map-char-to-score get-badge-type))
+
+(define (get-score-part2 pair)
+  (if
+   (empty? (car pair))
+   (get-score-from-group (cdr pair))
+   (+ (get-score-from-group (cdr pair)) (get-score-part2 (car pair)))))
+
+(check-equal? (get-score-part2 (cons (cons null '("asPf" "zegP" "Pwbv")) '("Jasd" "zxJc" "vJbn"))) 78)
+
+(define (extract-result-list-part2 path)
+  (get-score-part2 (group-by-num (file->lines path) 3)))
+
+(check-equal? (extract-result-list-part2 path-of-test-source) 70)
+
+(displayln (extract-result-list-part2 path-of-source))
 
